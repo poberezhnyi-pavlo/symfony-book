@@ -11,7 +11,7 @@ class BookCategory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 255, type: 'string')]
     private string $title;

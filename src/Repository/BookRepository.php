@@ -20,4 +20,16 @@ class BookRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Book::class);
     }
+
+    /**
+     * @param int $categoryId
+     * @return Book[]
+     */
+    public function findBookByCategoryId(int $categoryId): array
+    {
+        $query = $this->_em->createQuery('SELECT b FROM APP\ENTITY\Book b WHERE :categoryId MEMBER OF b.categories');
+        $query->setParameter('categoryId', $categoryId);
+
+        return $query->getResult();
+    }
 }
