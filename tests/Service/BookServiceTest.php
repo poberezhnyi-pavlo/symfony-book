@@ -4,7 +4,7 @@ namespace App\Tests\Service;
 
 use App\Entity\Book;
 use App\Entity\BookCategory;
-use App\Exceptopn\BookCategoryNotFoundException;
+use App\Exception\BookCategoryNotFoundException;
 use App\Model\BookListItem;
 use App\Model\BookListResponse;
 use App\Repository\BookCategoryRepository;
