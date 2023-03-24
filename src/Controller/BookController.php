@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Model\ErrorResponse;
 
-class BookController extends AbstractController
+final class BookController extends AbstractController
 {
     public function __construct(private readonly BookService $bookService)
     {
