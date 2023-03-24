@@ -3,6 +3,7 @@
 namespace App\Tests\Listener;
 
 use App\Listener\ApiExceptionListener;
+use App\Model\ErrorDebugDetail;
 use App\Model\ErrorResponse;
 use App\Service\ExceptionHandler\ExceptionMapping;
 use App\Service\ExceptionHandler\ExceptionMappingResolver;
@@ -35,6 +36,9 @@ final class ApiExceptionListenerTest extends AbstractTestCase
         $this->serializer = $this->createMock(SerializerInterface::class);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testNon500MappingWithHiddenMessage(): void
     {
         $mapping = ExceptionMapping::fromCode(Response::HTTP_NOT_FOUND);
@@ -65,6 +69,9 @@ final class ApiExceptionListenerTest extends AbstractTestCase
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $response);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testNon500MappingWithPublicMessage(): void
     {
         $mapping = new ExceptionMapping(Response::HTTP_NOT_FOUND, false, false);
@@ -95,6 +102,9 @@ final class ApiExceptionListenerTest extends AbstractTestCase
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $response);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testNon500LoggableMappingTrigger(): void
     {
         $mapping = new ExceptionMapping(Response::HTTP_NOT_FOUND, false, true);
@@ -131,6 +141,9 @@ final class ApiExceptionListenerTest extends AbstractTestCase
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $response);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function test500SsLoggable(): void
     {
         $mapping = ExceptionMapping::fromCode(Response::HTTP_GATEWAY_TIMEOUT);
@@ -168,6 +181,9 @@ final class ApiExceptionListenerTest extends AbstractTestCase
         $this->assertResponse(Response::HTTP_GATEWAY_TIMEOUT, $responseBody, $response);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function test500IsDefaultWithMappingNotFound(): void
     {
         $responseMessage = Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR];
@@ -204,6 +220,9 @@ final class ApiExceptionListenerTest extends AbstractTestCase
         $this->assertResponse(Response::HTTP_INTERNAL_SERVER_ERROR, $responseBody, $response);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testShowTraceWhenDebug(): void
     {
         $mapping = ExceptionMapping::fromCode(Response::HTTP_NOT_FOUND);
@@ -222,8 +241,14 @@ final class ApiExceptionListenerTest extends AbstractTestCase
             ->expects($this->once())
             ->method('serialize')
             ->with(
-                $this->callback(function(ErrorResponse $response) use ($responseMessage) {
-                    return $response->getMessage() == $responseMessage && !empty($response->getDetails()['trace']);
+                $this->callback(function (ErrorResponse $response) use ($responseMessage) {
+                    /** @var ErrorDebugDetail|object $details */
+                    $details = $response->getDetails();
+
+                    return $response->getMessage() === $responseMessage
+                        && $details instanceof ErrorDebugDetail
+                        && !empty($details->getTrace())
+                    ;
                 }),
                 JsonEncoder::FORMAT
             )
