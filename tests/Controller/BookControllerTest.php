@@ -76,7 +76,7 @@ final class BookControllerTest extends AbstractControllerTestCase
                 ->setMeap(false)
                 ->setAuthors(['author'])
                 ->setCategories(new ArrayCollection([$bookCategory]))
-                ->setPublicationDate(new DateTime())
+                ->setPublicationDate(new \DateTimeImmutable())
         );
 
         $this->em->flush();

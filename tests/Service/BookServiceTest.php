@@ -65,7 +65,7 @@ class BookServiceTest extends AbstractTestCase
             ->setAuthors(['author'])
             ->setImage('http://loc/image.png')
             ->setCategories(new ArrayCollection())
-            ->setPublicationDate(new DateTime('2020-10-10'))
+            ->setPublicationDate(new \DateTimeImmutable('2020-10-10'))
         ;
 
         $this->setEntityId($book, 123);
@@ -82,7 +82,7 @@ class BookServiceTest extends AbstractTestCase
             ->setMeap(false)
             ->setAuthors(['author'])
             ->setImage('http://loc/image.png')
-            ->setPublicationDate((new DateTime('2020-10-10'))->getTimestamp())
+            ->setPublicationDate((new \DateTimeImmutable('2020-10-10'))->getTimestamp())
         ;
     }
 }
