@@ -74,6 +74,8 @@ final class BookControllerTest extends AbstractControllerTestCase
                 ->setImage('http://loc/in.png')
                 ->setSlug('test-book')
                 ->setMeap(false)
+                ->setIsbn('12345')
+                ->setDescription('test Description')
                 ->setAuthors(['author'])
                 ->setCategories(new ArrayCollection([$bookCategory]))
                 ->setPublicationDate(new \DateTimeImmutable())

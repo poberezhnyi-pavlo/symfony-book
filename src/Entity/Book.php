@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\BookRepository;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,20 +15,26 @@ class Book
     #[ORM\Column(type: 'integer')]
     private ?int $id;
 
-    #[ORM\Column(length: 255, type: 'string')]
+    #[ORM\Column(type: 'string', length: 255)]
     private string $title;
 
-    #[ORM\Column(length: 255, type: 'string')]
+    #[ORM\Column(type: 'string', length: 255)]
     private string $slug;
 
-    #[ORM\Column(length: 255, type: 'string')]
+    #[ORM\Column(type: 'string', length: 255)]
     private string $image;
 
     #[ORM\Column(type: 'simple_array')]
     private array $authors;
 
+    #[ORM\Column(type: 'string', length: 15)]
+    private ?string $isbn;
+
+    #[ORM\Column(type: 'text')]
+    private string $description;
+
     #[ORM\Column(type: 'date_immutable')]
-    private DateTimeInterface $publicationDate;
+    private \DateTimeInterface $publicationDate;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $meap;
@@ -38,11 +43,25 @@ class Book
      * @var Collection<BookCategory>
      */
     #[ORM\ManyToMany(targetEntity: BookCategory::class)]
+    #[ORM\JoinTable(name: 'book_to_book_category')]
     private Collection $categories;
+
+    /**
+     * @var Collection<BookToBookFormat>
+     */
+    #[ORM\OneToMany(mappedBy: 'book', targetEntity: BookToBookFormat::class)]
+    private Collection $formats;
+
+    /**
+     * @var Collection<Review>
+     */
+    #[ORM\OneToMany(mappedBy: 'book', targetEntity: Review::class)]
+    private Collection $reviews;
 
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     public function getSlug(): string
@@ -81,12 +100,12 @@ class Book
         return $this;
     }
 
-    public function getPublicationDate(): DateTimeInterface
+    public function getPublicationDate(): \DateTimeInterface
     {
         return $this->publicationDate;
     }
 
-    public function setPublicationDate(DateTimeInterface $publicationDate): self
+    public function setPublicationDate(\DateTimeInterface $publicationDate): self
     {
         $this->publicationDate = $publicationDate;
 
@@ -115,6 +134,7 @@ class Book
 
     /**
      * @param Collection<BookCategory> $categories
+     *
      * @return $this
      */
     public function setCategories(Collection $categories): self
@@ -137,6 +157,54 @@ class Book
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getIsbn(): string
+    {
+        return $this->isbn;
+    }
+
+    public function setIsbn(string $isbn): self
+    {
+        $this->isbn = $isbn;
+
+        return $this;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getFormats(): Collection
+    {
+        return $this->formats;
+    }
+
+    public function setFormats(Collection $formats): self
+    {
+        $this->formats = $formats;
+
+        return $this;
+    }
+
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function setReviews(Collection $reviews): self
+    {
+        $this->reviews = $reviews;
 
         return $this;
     }

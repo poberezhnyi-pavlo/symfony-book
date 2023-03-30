@@ -9,6 +9,7 @@ use App\Model\BookListItem;
 use App\Model\BookListResponse;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
+use App\Repository\ReviewRepository;
 use App\Service\BookService;
 use App\Tests\AbstractTestCase;
 use DateTime;
@@ -18,6 +19,7 @@ class BookServiceTest extends AbstractTestCase
 {
     public function testGetBookByCategoryNotFound(): void
     {
+        $reviewRepository = $this->createMock(ReviewRepository::class);
         $bookRepository = $this->createMock(BookRepository::class);
         $bookCategoryRepository = $this->createMock(BookCategoryRepository::class);
         $bookCategoryRepository
@@ -29,11 +31,12 @@ class BookServiceTest extends AbstractTestCase
 
         $this->expectException(BookCategoryNotFoundException::class);
 
-        (new BookService($bookRepository, $bookCategoryRepository))->getBookByCategory(130);
+        (new BookService($bookRepository, $bookCategoryRepository, $reviewRepository))->getBookByCategory(130);
     }
 
     public function testGetBookByCategory(): void
     {
+        $reviewRepository = $this->createMock(ReviewRepository::class);
         $bookRepository = $this->createMock(BookRepository::class);
         $bookRepository
             ->expects($this->once())
@@ -50,7 +53,7 @@ class BookServiceTest extends AbstractTestCase
             ->willReturn(true)
         ;
 
-        $service = new BookService($bookRepository, $bookCategoryRepository);
+        $service = new BookService($bookRepository, $bookCategoryRepository, $reviewRepository);
         $expected = new BookListResponse([$this->createBookItemModel()]);
 
         $this->assertEquals($expected, $service->getBookByCategory(130));
@@ -62,6 +65,8 @@ class BookServiceTest extends AbstractTestCase
             ->setTitle('Test Book')
             ->setSlug('test_book')
             ->setMeap(false)
+            ->setIsbn('12345')
+            ->setDescription('set Description')
             ->setAuthors(['author'])
             ->setImage('http://loc/image.png')
             ->setCategories(new ArrayCollection())

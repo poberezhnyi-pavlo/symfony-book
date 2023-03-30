@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\BookCategory;
-use App\Model\BookCategoryListItem;
+use App\Model\BookCategory as BookCategoryModal;
 use App\Model\BookCategoryListResponse;
 use App\Repository\BookCategoryRepository;
-use Doctrine\Common\Collections\Criteria;
 
 final class BookCategoryService
 {
@@ -21,7 +20,7 @@ final class BookCategoryService
         $categories = $this->bookCategoryRepository->findAllSortedByTitle();
 
         $items = array_map(
-            static fn (BookCategory $bookCategory) => new BookCategoryListItem(
+            static fn (BookCategory $bookCategory) => new BookCategoryModal(
                 $bookCategory->getId(), $bookCategory->getTitle(), $bookCategory->getSlug(),
             ),
             $categories

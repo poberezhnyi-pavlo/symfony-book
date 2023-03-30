@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 final class BookRepositoryTest extends AbstractRepositoryTestCase
 {
     private BookRepository $bookRepository;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -23,7 +24,7 @@ final class BookRepositoryTest extends AbstractRepositoryTestCase
         $deviceCategory = (new BookCategory())->setTitle('Devices')->setSlug('devices');
         $this->em->persist($deviceCategory);
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             $book = $this->createBook('device-'.$i, $deviceCategory);
             $this->em->persist($book);
         }
@@ -39,6 +40,8 @@ final class BookRepositoryTest extends AbstractRepositoryTestCase
             ->setPublicationDate(new \DateTimeImmutable())
             ->setTitle($string)
             ->setAuthors(['author'])
+            ->setIsbn('12345')
+            ->setDescription('test Description')
             ->setMeap(false)
             ->setCategories(new ArrayCollection([$category]))
             ->setSlug($string)
