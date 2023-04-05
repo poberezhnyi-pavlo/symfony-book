@@ -31,13 +31,19 @@ class ReviewService
         $paginator = $this->reviewRepository->getPageByBookId($id, $offset, self::PER_PAGE);
         $total = count($paginator);
 
+        $items = [];
+
+        foreach ($paginator as $item) {
+            $items[] = $this->map($item);
+        }
+
         return (new ReviewPage())
             ->setRating($this->ratingService->calcReviewRatingFroBook($id, $total))
             ->setTotal($total)
             ->setPage($page)
             ->setPerPage(self::PER_PAGE)
             ->setPages((int) ceil($total / self::PER_PAGE))
-            ->setItems(array_map([$this, 'map'], $paginator->getIterator()->getArrayCopy()))
+            ->setItems($items)
         ;
     }
 

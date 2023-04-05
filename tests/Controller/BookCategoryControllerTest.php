@@ -43,10 +43,10 @@ final class BookCategoryControllerTest extends AbstractControllerTestCase
                             'id' => [
                                 'type' => 'integer',
                             ],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 }

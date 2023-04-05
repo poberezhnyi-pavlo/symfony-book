@@ -3,9 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Book;
-use App\Entity\BookToBookFormat;
 use App\Entity\Review;
-use App\Entity\Subscriber;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -45,7 +43,10 @@ class ReviewRepository extends ServiceEntityRepository
         ;
     }
 
-    public function getPageByBookId(int $id, int $offset, int $limit): Paginator
+    /**
+     * @return \Traversable&\Countable
+     */
+    public function getPageByBookId(int $id, int $offset, int $limit)
     {
         $query = $this->_em
             ->createQuery('SELECT r FROM App\Entity\Review r WHERE r.book = :id ORDER BY r.createdAt DESC')
