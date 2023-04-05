@@ -17,9 +17,14 @@ use App\Model\BookListResponse;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
 use App\Repository\ReviewRepository;
+use App\Service\Recommendation\Exception\AccessDeniedException;
+use App\Service\Recommendation\Exception\RequestException;
+use App\Service\Recommendation\Model\RecommendationItem;
+use App\Service\Recommendation\RecommendationService;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Psr\Log\LoggerInterface;
 
 class BookService
 {
@@ -28,6 +33,8 @@ class BookService
         private readonly BookCategoryRepository $bookCategoryRepository,
         private readonly ReviewRepository $reviewRepository,
         private readonly RatingService $ratingService,
+        private readonly RecommendationService $recommendationService,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -53,6 +60,8 @@ class BookService
 
         $reviews = $this->reviewRepository->countByBookId($id);
 
+        $recommendations = [];
+
         $categories = $book->getCategories()
             ->map(
                 fn (BookCategory $bookCategory) => (new BookCategoryModel(
@@ -61,17 +70,40 @@ class BookService
             )
         ;
 
+        try {
+            $recommendations = $this->getRecommendation($id);
+        } catch (\Exception $ex) {
+            $this->logger->error('error while fetching recommendations', [
+                'exception' => $ex->getMessage(),
+                'bookId' => $id,
+            ]);
+        }
+
         return BookMapper::map($book, new BookDetails())
             ->setRating($this->ratingService->calcReviewRatingFroBook($id, $reviews))
             ->setReviews($reviews)
             ->setFormats($this->mapFormats($book->getFormats()))
             ->setCategories($categories->toArray())
+            ->setRecommendations($recommendations)
         ;
     }
 
     /**
+     * @throws RequestException
+     * @throws AccessDeniedException
+     */
+    private function getRecommendation(int $bookId): array
+    {
+        $ids = array_map(
+            fn (RecommendationItem $item) => $item->getId(),
+            $this->recommendationService->getRecommendationsByBookId($bookId)->getRecommendations()
+        );
+
+        return array_map([BookMapper::class, 'mapRecommended'], $this->bookRepository->findBooksByIds($ids));
+    }
+
+    /**
      * @param Collection<BookToBookFormat> $formats
-     * @return array
      */
     private function mapFormats(Collection $formats): array
     {
