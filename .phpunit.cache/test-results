@@ -1,1 +1,0 @@
-{"version":1,"defects":{"App\\Tests\\Repository\\BookCategoryRepositoryTest::testFindAllSortedByTitle":7,"App\\Tests\\Repository\\BookRepositoryTest::testFindBookByCategoryId":8},"times":{"App\\Tests\\Repository\\BookCategoryRepositoryTest::testFindAllSortedByTitle":0.045,"App\\Tests\\Repository\\BookRepositoryTest::testFindBookByCategoryId":0.044}}
