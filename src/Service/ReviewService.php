@@ -15,8 +15,10 @@ class ReviewService
 {
     private const PER_PAGE = 5;
 
-    public function __construct(private readonly ReviewRepository $reviewRepository)
-    {
+    public function __construct(
+        private readonly ReviewRepository $reviewRepository,
+        private readonly RatingService $ratingService,
+    ) {
     }
 
     /**
@@ -28,14 +30,9 @@ class ReviewService
         $offset = max($page - 1, 0) * self::PER_PAGE;
         $paginator = $this->reviewRepository->getPageByBookId($id, $offset, self::PER_PAGE);
         $total = count($paginator);
-        $rating = 0;
-
-        if ($total > 0) {
-            $rating = $this->reviewRepository->getBookTotalRatingSum($id) / $total;
-        }
 
         return (new ReviewPage())
-            ->setRating($rating)
+            ->setRating($this->ratingService->calcReviewRatingFroBook($id, $total))
             ->setTotal($total)
             ->setPage($page)
             ->setPerPage(self::PER_PAGE)
