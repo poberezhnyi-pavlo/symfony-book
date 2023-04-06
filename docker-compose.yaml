@@ -26,9 +26,9 @@ services:
     image: spectolabs/hoverfly:v1.3.4
     command:
       - "-webserver"
-      - "-response-body-files-path=/hoverfly_akpp/responses"
+      - "-response-body-files-path=/hoverfly_app/responses"
       - "-import=/hoverfly_app/simulations/recommend.simulation.json"
     volumes:
-      - "\\wsl$\hoverfly:/hoverfly_app:ro"
+      - ./hoverfly:/hoverfly_app:ro
     ports:
       - "8500:8500"
