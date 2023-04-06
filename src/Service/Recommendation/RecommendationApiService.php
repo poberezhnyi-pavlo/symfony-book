@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class RecommendationService
+class RecommendationApiService
 {
     public function __construct(
         private readonly HttpClientInterface $recommendationClient,

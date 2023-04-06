@@ -34,6 +34,9 @@ final class BookController extends AbstractController
      *
      *     @Model(type=ErrorResponse::class)
      * )
+     * @OA\Tag(
+     *     name="books"
+     * )
      */
     #[Route(path: '/api/v1/category/{id}/books', methods: 'GET')]
     public function booksByCategory(int $id): Response
@@ -54,6 +57,9 @@ final class BookController extends AbstractController
      *     description="book not found",
      *
      *     @Model(type=ErrorResponse::class)
+     * )
+     * @OA\Tag(
+     *     name="books"
      * )
      */
     #[Route(path: '/api/v1/book/{id}', methods: 'GET')]

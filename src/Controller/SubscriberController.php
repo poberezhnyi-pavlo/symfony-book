@@ -33,6 +33,10 @@ final class SubscriberController extends AbstractController
      * )
      *
      * @OA\RequestBody(@Model(type=SubscriberRequest::class))
+     *
+      @OA\Tag(
+     *     name="subscribe"
+     * )
      */
     #[Route(path: '/api/v1/subscribe', methods: 'POST')]
     public function subscribe(#[RequestBody] SubscriberRequest $subscriberRequest): Response

@@ -29,7 +29,6 @@ class ReviewService
     {
         $offset = max($page - 1, 0) * self::PER_PAGE;
         $paginator = $this->reviewRepository->getPageByBookId($id, $offset, self::PER_PAGE);
-        $total = count($paginator);
 
         $items = [];
 
@@ -37,9 +36,11 @@ class ReviewService
             $items[] = $this->map($item);
         }
 
+        $rating = $this->ratingService->calcReviewRatingFroBook($id);
+
         return (new ReviewPage())
-            ->setRating($this->ratingService->calcReviewRatingFroBook($id, $total))
-            ->setTotal($total)
+            ->setRating($rating->getRating())
+            ->setTotal($rating->getTotal())
             ->setPage($page)
             ->setPerPage(self::PER_PAGE)
             ->setPages((int) ceil($total / self::PER_PAGE))

@@ -28,6 +28,9 @@ class ReviewController extends AbstractController
      *
      *     @Model(type=ReviewPage::class)
      * )
+     * @OA\Tag(
+     *     name="books"
+     * )
      */
     #[Route(path: '/api/v1/book/{id}/reviews', methods: ['GET'])]
     public function reviews(int $id, Request $request): Response

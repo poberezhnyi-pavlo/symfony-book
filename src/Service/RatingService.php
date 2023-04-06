@@ -18,8 +18,11 @@ class RatingService
      * @throws NonUniqueResultException
      * @throws NoResultException
      */
-    public function calcReviewRatingFroBook(int $id, int $total): float
+    public function calcReviewRatingFroBook(int $id): Rating
     {
-        return $total > 0 ? $this->reviewRepository->getBookTotalRatingSum($id) / $total : 0;
+        $total = $this->reviewRepository->countByBookId($id);
+        $rating = $total > 0 ? $this->reviewRepository->getBookTotalRatingSum($id) / $total : 0;
+
+        return new Rating($total, $rating);
     }
 }

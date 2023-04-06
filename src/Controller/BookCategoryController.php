@@ -25,6 +25,9 @@ final class BookCategoryController extends AbstractController
      *
      *     @Model(type=BookCategoryListResponse::class)
      * )
+     * @OA\Tag(
+     *     name="books"
+     * )
      */
     #[Route(path: '/api/v1/book/categories', methods: 'GET')]
     public function categories(): Response
